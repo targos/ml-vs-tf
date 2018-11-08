@@ -22,7 +22,6 @@
   "homepage": "https://github.com/targos/ml-vs-tf#readme",
   "dependencies": {
     "@tensorflow/tfjs-core": "^0.13.10",
-    "@tensorflow/tfjs-node": "^0.1.19",
     "ml-matrix": "^5.2.0",
     "next": "^7.0.2",
     "react": "^16.7.0-alpha.0",
