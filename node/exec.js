@@ -2,8 +2,8 @@
 
 const { Matrix } = require('ml-matrix');
 const tf = require('@tensorflow/tfjs-core');
-require('@tensorflow/tfjs-node');
 
+module.exports = function exec() {
 const m1 = Matrix.random(200, 300);
 const m2 = Matrix.random(300, 200);
 
@@ -42,3 +42,5 @@ for (var i = 0; i < 1000; i++) {
   getMResult();
 }
 console.timeEnd('matrix');
+
+}
