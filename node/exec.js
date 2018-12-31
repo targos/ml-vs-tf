@@ -1,46 +1,26 @@
 'use strict';
 
-const { Matrix } = require('ml-matrix');
 const tf = require('@tensorflow/tfjs-core');
 
+const rows = 10000;
+const cols = 20000;
+
+const size = rows * cols;
+
 module.exports = function exec() {
-const m1 = Matrix.random(200, 300);
-const m2 = Matrix.random(300, 200);
+  const ma1 = new Float32Array(size);
+  const ma2 = new Float32Array(size);
 
-const ma1 = m1.to2DArray();
-const ma2 = m2.to2DArray();
+  for (let i = 0; i < size; i++) {
+    ma1[i] = Math.random();
+    ma2[i] = Math.random();
+  }
 
-const t1 = tf.tensor(ma1);
-const t2 = tf.tensor(ma2);
+  const t1 = tf.tensor2d(ma1, [cols, rows], 'float32');
+  const t2 = tf.tensor(ma2, [rows, cols], 'float32');
 
-function getTResult() {
-  const tResult = t1.matMul(t2);
-  return tResult;
-}
-
-function getMResult() {
-  const mResult = m1.mmul(m2);
-  return mResult;
-}
-
-// warmup
-for (var i = 0; i < 100; i++) {
-  getTResult();
-  getMResult();
-}
-
-// timing t
-console.time('tensorflow');
-for (var i = 0; i < 1000; i++) {
-  getTResult();
-}
-console.timeEnd('tensorflow');
-
-// timing m
-console.time('matrix');
-for (var i = 0; i < 1000; i++) {
-  getMResult();
-}
-console.timeEnd('matrix');
-
-}
+  console.time('tensorflow');
+  const result = t1.matMul(t2);
+  console.timeEnd('tensorflow');
+  console.log(result.shape);
+};
