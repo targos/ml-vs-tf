@@ -1,53 +1,33 @@
 'use strict';
 
-import { Matrix } from 'ml-matrix';
 import * as tf from '@tensorflow/tfjs-core';
 
-export function createMatrices(width, height) {
-  const m1 = Matrix.random(width, height);
-  const m2 = Matrix.random(height, width);
+export function createMatrices(cols, rows) {
+  const size = rows * cols;
 
-  const ma1 = m1.to2DArray();
-  const ma2 = m2.to2DArray();
+  const ma1 = new Float32Array(size);
+  const ma2 = new Float32Array(size);
 
-  const t1 = tf.tensor(ma1);
-  const t2 = tf.tensor(ma2);
+  for (let i = 0; i < size; i++) {
+    ma1[i] = Math.random();
+    ma2[i] = Math.random();
+  }
+
+  const t1 = tf.tensor2d(ma1, [cols, rows], 'float32');
+  const t2 = tf.tensor(ma2, [rows, cols], 'float32');
 
   return {
-    width,
-    height,
-    m1,
-    m2,
+    cols,
+    rows,
     t1,
     t2
   };
 }
 
-export function execute(data, iterations) {
-  const { m1, m2, t1, t2 } = data;
-  function getTResult() {
-    const tResult = t1.matMul(t2);
-    return tResult;
-  }
+export function execute(data) {
+  const { t1, t2 } = data;
 
-  function getMResult() {
-    const mResult = m1.mmul(m2);
-    return mResult;
-  }
-
-  const result = {};
-  // timing t
-  const startT = performance.now();
-  for (var i = 0; i < iterations; i++) {
-    getTResult();
-  }
-  result.t = performance.now() - startT;
-
-  // timing m
-  const startM = performance.now();
-  for (var i = 0; i < iterations; i++) {
-    getMResult();
-  }
-  result.m = performance.now() - startM;
-  return result;
+  const start = performance.now();
+  const result = t1.matMul(t2);
+  return performance.now() - start;
 }

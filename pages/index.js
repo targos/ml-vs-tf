@@ -4,42 +4,38 @@ import Head from 'next/head';
 import { createMatrices, execute } from '../src/browser';
 
 export default () => {
-  const [iterations, setIterations] = useState(100);
-  const [width, setWidth] = useState(200);
-  const [height, setHeight] = useState(300);
+  const [rows, setRows] = useState(10000);
+  const [cols, setCols] = useState(15000);
   const [data, setData] = useState(null);
   const [executing, setExecuting] = useState(false);
-  const [results, setResults] = useState(null);
+  const [result, setResult] = useState(null);
 
-  const handleChangeIterations = (e) => {
-    setIterations(Number(e.target.value));
+  const handleChangeCols = (e) => {
+    setCols(Number(e.target.value));
   };
-  const handleChangeWidth = (e) => {
-    setWidth(Number(e.target.value));
-  };
-  const handleChangeHeight = (e) => {
-    setHeight(Number(e.target.value));
+  const handleChangeRows = (e) => {
+    setRows(Number(e.target.value));
   };
 
   let action;
-  let result;
-  if (!data || data.width !== width || data.height !== height) {
-    result = null;
+  let resultDiv;
+  if (!data || data.cols !== cols || data.rows !== rows) {
+    resultDiv = null;
     action = (
       <button
         type="button"
         className="border p-2"
         onClick={() => {
-          setData(createMatrices(width, height));
+          setData(createMatrices(cols, rows));
         }}
       >
         Create matrices
       </button>
     );
   } else {
-    result = executing
+    resultDiv = executing
       ? 'Executing...'
-      : results && <Results value={results} />;
+      : result && <Results value={result} />;
     action = (
       <button
         className="border p-2"
@@ -47,9 +43,9 @@ export default () => {
         disabled={executing}
         onClick={() => {
           setExecuting(true);
-          setResults(null);
+          setResult(null);
           setTimeout(() => {
-            setResults(execute(data, iterations));
+            setResult(execute(data));
             setExecuting(false);
           }, 100);
         }}
@@ -71,43 +67,31 @@ export default () => {
         <h1 className="mb-6">Demo of ml.js vs TensorFlow.js</h1>
         <h2 className="mb-4">Multiplying two matrices</h2>
         <div className="mb-2">
-          <label htmlFor="width" className="mr-4">
-            Width
+          <label htmlFor="cols" className="mr-4">
+            Columns
           </label>
           <input
             className="border rounded p-2"
             type="number"
-            value={width}
-            id="width"
-            onChange={handleChangeWidth}
+            value={cols}
+            id="cols"
+            onChange={handleChangeCols}
           />
         </div>
         <div className="mb-2">
-          <label htmlFor="height" className="mr-4">
-            Height
+          <label htmlFor="rows" className="mr-4">
+            Rows
           </label>
           <input
             className="border rounded p-2"
             type="number"
-            value={height}
-            id="height"
-            onChange={handleChangeHeight}
-          />
-        </div>
-        <div className="mb-2">
-          <label htmlFor="iterations" className="mr-4">
-            Iterations
-          </label>
-          <input
-            className="border rounded p-2"
-            type="number"
-            value={iterations}
-            id="iterations"
-            onChange={handleChangeIterations}
+            value={rows}
+            id="rows"
+            onChange={handleChangeRows}
           />
         </div>
         {action}
-        {result}
+        {resultDiv}
       </div>
     </>
   );
@@ -116,8 +100,7 @@ export default () => {
 function Results(props) {
   return (
     <ul>
-      <li>TensorFlow took {Math.round(props.value.t) / 1000}s</li>
-      <li>ml.js took {Math.round(props.value.m) / 1000}s</li>
+      <li>Computation took {Math.round(props.value) / 1000}s</li>
     </ul>
   );
 }

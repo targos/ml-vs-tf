@@ -3,7 +3,7 @@
 const tf = require('@tensorflow/tfjs-core');
 
 const rows = 10000;
-const cols = 20000;
+const cols = 15000;
 
 const size = rows * cols;
 
