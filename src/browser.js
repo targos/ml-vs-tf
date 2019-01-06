@@ -29,5 +29,7 @@ export function execute(data) {
 
   const start = performance.now();
   const result = t1.matMul(t2);
-  return performance.now() - start;
+  const time = performance.now() - start;
+  result.dispose();
+  return time;
 }
